@@ -25,6 +25,7 @@ using namespace std;
 vector<char> alphabet; // Vector of alphabet
 string regexp = "";    // Current regular expression
 string m_regexp = "";  // Current expanded regular expression
+bool empty_regex = false;
 
 unordered_map<char, int> precedence = {{'(', 4}, {')', 4}, {'*', 3}, {'.', 2}, {'+', 1}, {'|', 1}};
 
@@ -288,6 +289,7 @@ void readRegExp()
     {
         if (isValidRegExp(regexp_pre))
         {
+            empty_regex = false;
             regexp = regexp_pre1;
             m_regexp = regexp_pre;
         }
@@ -297,7 +299,9 @@ void readRegExp()
     }
     else
     {
-        cout << red << "Could not read any expression!\n"
+        regexp = m_regexp = "";
+        empty_regex = true;
+        cout << yellow << "Empty regex!\n"
              << reset;
     }
 }
@@ -305,17 +309,22 @@ void readRegExp()
 int readOperation()
 {
     cout << "\n------------------------------------------------------\n";
-    if (regexp.size() > 0)
+    if (regexp.size() > 0 || empty_regex)
     {
-        cout << "Curent regular expression : " << regexp;
+        cout << "Curent regular expression : ";
+        if (empty_regex)
+            cout << yellow << "empty";
+        else
+            cout << cyan << regexp;
 
 #if DEBUG == 1
         cout << " ~ " << m_regexp;
 #endif
-        cout << endl;
+        cout << reset << endl;
     }
+
     cout << "Choose an operation to perform : \n";
-    if (regexp.size() > 0)
+    if (regexp.size() > 0 || empty_regex)
         cout << "1. Generate NFA for the current regular expresssion\n";
     cout << "2. Enter ";
     if (regexp.size() > 0)
@@ -482,6 +491,11 @@ void generateNFA() // Generate NFA from current regular expression
     stack<char> op_stack;
     stack<NFA *> nfa_stack;
 
+    if (empty_regex)
+    {
+        nfa_stack.push(new NFA('\0'));
+    }
+
     for (int i = 0; i < m_regexp.size(); i++)
     {
         const char curr = m_regexp[i];
@@ -604,7 +618,7 @@ int main()
         case 0:
             return 0;
         case 1:
-            if (regexp.size() > 0)
+            if (regexp.size() > 0 || empty_regex)
             {
                 generateNFA();
                 break;
