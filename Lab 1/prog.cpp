@@ -7,7 +7,7 @@
 // | your program should generate the corresponding NFA.       |
 //  — — — — — — — — — — — — — — — — — — — — — — — — — — — — — —
 
-#define DEBUG 1
+#define DEBUG 0
 
 #include <algorithm>
 #include <iostream>
@@ -129,7 +129,7 @@ bool isValidRegExp(string exp)
         }
         else if (isOperator(curr))
         {
-            if (curr == '(' || op_stack.empty())
+            if (curr == '(' || (curr != ')' && op_stack.empty()))
             {
                 op_stack.push(curr);
             }
@@ -138,7 +138,7 @@ bool isValidRegExp(string exp)
                 if (op_stack.empty())
                     return false;
 
-                while (op_stack.top() != '(')
+                while (!op_stack.empty() && op_stack.top() != '(')
                 {
                     const char op = op_stack.top();
                     op_stack.pop();
@@ -156,6 +156,9 @@ bool isValidRegExp(string exp)
 
                     exp_stack.push((a + op) + b);
                 }
+
+                if (op_stack.empty())
+                    return false;
 
                 op_stack.pop();
             }
@@ -192,7 +195,9 @@ bool isValidRegExp(string exp)
         }
         else
         {
-            exp_stack.push("" + curr);
+            string curr_st = "";
+            curr_st += curr;
+            exp_stack.push(curr_st);
         }
     }
 

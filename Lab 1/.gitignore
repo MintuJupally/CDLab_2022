@@ -1,5 +1,3 @@
-.vscode
-*.dot
-*.png
-*.out
+*
 !sample/**
+!prog.cpp
