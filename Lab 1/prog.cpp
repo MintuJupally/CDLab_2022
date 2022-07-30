@@ -42,7 +42,7 @@ char reset[] = "\033[0m";
 class Node
 {
 public:
-    int type; // 0 - start state, 1 - accept state, -1 - normal states
+    int type; // 0 - start state, 1 - accept state, 2 - state that is both start and accept, -1 - normal states
     int state;
     unordered_map<char, vector<Node *>> transitions;
 
@@ -53,7 +53,7 @@ public:
 
     void setType(int typ)
     {
-        if (typ < -1 || typ > 1)
+        if (typ < -1 || typ > 2)
         {
             cout << "Invalid Node Type\n";
             return;
@@ -348,15 +348,18 @@ NFA *perform(NFA *a, char op, NFA *b = NULL)
     {
     case '*':
     {
-        Node *new_state = new Node(0);
+        Node *new_state = new Node(2);
         a->start->setType(-1);
+
         new_state->addTransition('\0', a->start);
-        a->start = new_state;
 
         for (auto node : a->accept)
         {
             node->addTransition('\0', a->start);
         }
+        a->accept.push_back(new_state);
+
+        a->start = new_state;
         return a;
     }
     break;
@@ -450,11 +453,11 @@ void visualizeNFA(NFA *root)
                     vis[node] = 1;
                 }
 
-                if (curr->type == 1)
+                if (curr->type == 1 || curr->type == 2)
                 {
                     dotFile << "\tq" << curr->state << " [shape=doublecircle];\n";
                 }
-                if (node->type == 1)
+                if (node->type == 1 || node->type == 2)
                 {
                     dotFile << "\tq" << node->state << " [shape=doublecircle];\n";
                 }
