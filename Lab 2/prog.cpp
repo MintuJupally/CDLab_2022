@@ -84,14 +84,18 @@ string matchNumber(string str, int &p)
 
     if (p < str.size())
     {
+        bool flag = false;
         if (str[p] == '.')
         {
             ++p;
-            while (p < str.size() && isDigit(str[p]))
-                ++p;
+            if (p >= str.size() || !isDigit(str[p]))
+                flag = false;
+            else
+                while (p < str.size() && isDigit(str[p]))
+                    ++p;
         }
 
-        if (str[p] == 'E')
+        if (!flag && str[p] == 'E')
         {
             ++p;
             if (p < str.size() && (str[p] == '+' || str[p] == '-'))
@@ -170,6 +174,14 @@ string analyze(string str, int &p)
     else if (isRelopChar(first))
     {
         return matchRelop(str, p);
+    }
+    else
+    {
+        string ans = "";
+        ans += "Unrecognised - ";
+        ans += str[p++];
+        ans += "\n";
+        return ans;
     }
 
     return "";
