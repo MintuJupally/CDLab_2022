@@ -27,3 +27,5 @@ E->E+T|T
 T->T*F|F
 F->(E)|id
 ```
+![image](https://user-images.githubusercontent.com/59505795/187396534-99dbf4f5-f559-41fa-8923-3ddf2ee6ce9f.png)
+
