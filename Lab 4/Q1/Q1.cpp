@@ -237,8 +237,8 @@ int main()
     printRules(true);
 
     simplifyRules();
-    cout << "\n------------------------" << endl;
-    printRules(true);
+    // cout << "\n------------------------" << endl;
+    // printRules(true);
 
     eliminateLRecursion();
 

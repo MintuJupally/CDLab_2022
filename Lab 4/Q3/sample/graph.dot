@@ -1,0 +1,58 @@
+digraph G {
+node [shape="circle"]
+	1 [label="E"]
+	2 [label="T"]
+	1 -> 2
+	20 [label="E'"]
+	1 -> 20
+	3 [label="F"]
+	2 -> 3
+	18 [label="T'"]
+	2 -> 18
+	21 [label="+"]
+	20 -> 21
+	22 [label="T"]
+	20 -> 22
+	27 [label="E'"]
+	20 -> 27
+	4 [label="("]
+	3 -> 4
+	5 [label="E"]
+	3 -> 5
+	17 [label=")"]
+	3 -> 17
+	19 [label="∈"]
+	18 -> 19
+	23 [label="F"]
+	22 -> 23
+	25 [label="T'"]
+	22 -> 25
+	28 [label="∈"]
+	27 -> 28
+	6 [label="T"]
+	5 -> 6
+	15 [label="E'"]
+	5 -> 15
+	24 [label="id"]
+	23 -> 24
+	26 [label="∈"]
+	25 -> 26
+	7 [label="F"]
+	6 -> 7
+	9 [label="T'"]
+	6 -> 9
+	16 [label="∈"]
+	15 -> 16
+	8 [label="id"]
+	7 -> 8
+	10 [label="*"]
+	9 -> 10
+	11 [label="F"]
+	9 -> 11
+	13 [label="T'"]
+	9 -> 13
+	12 [label="id"]
+	11 -> 12
+	14 [label="∈"]
+	13 -> 14
+}

@@ -8,4 +8,4 @@
 | Lab 1 | NFA Generator from Regular Expression |
 | Lab 2 | Lexical Analysis                      |
 | Lab 3 | Lexical Analysis (LEX)                |
-| Lab 4 | Recursive Descent Parser              |
+| Lab 4 | Parsing                               |

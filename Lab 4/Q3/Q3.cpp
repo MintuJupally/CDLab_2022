@@ -473,24 +473,11 @@ int main()
         noteRule(line);
     }
 
-    if (false)
-    {
-        std::cout << "Given Grammar : \n------------------------" << endl;
-        printRules(true);
+    simplifyRules();
 
-        simplifyRules();
-        std::cout << "\n------------------------" << endl;
-        printRules(true);
+    eliminateLRecursion();
 
-        eliminateLRecursion();
-
-        std::cout << "\nLeft recursion removed : \n------------------------" << endl;
-        printRules(true);
-
-        leftFactorize();
-        std::cout << "\nLeft Factorized Grammar : \n------------------------" << endl;
-        printRules(true);
-    }
+    leftFactorize();
 
     int choice = 1;
 
