@@ -1,4 +1,4 @@
-# Recursive Descent Parser
+# Eliminate Left Recursion
 
 To use the program the following commands must be available:
 

@@ -1,4 +1,4 @@
-# Recursive Descent Parser
+# Left Factoring
 
 To use the program the following commands must be available:
 
