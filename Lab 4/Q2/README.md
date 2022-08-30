@@ -25,3 +25,5 @@ g++ Q2.cpp && ./a.out
 # input.txt
 A->aAB|aBc|aAc
 ```
+![image](https://user-images.githubusercontent.com/59505795/187396113-bd2e0cf1-ef3d-444c-94ee-396fe0816842.png)
+
