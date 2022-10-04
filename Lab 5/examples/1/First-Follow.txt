@@ -1,0 +1,56 @@
+## FIRSTS
+IOS => print scan 
+PE => ( fc ic id str 
+WS => while 
+E' => + - ∈ 
+IS => if 
+P => prog 
+SL => id if print scan while ∈ 
+RE' => < = > 
+BE => ( fc ic id not { 
+DL => float int ∈ 
+VL => id 
+VL' => id ∈ 
+IS' => else end 
+AE' => and ∈ 
+T' => * / ∈ 
+TY => float int 
+D => float int 
+BE' => or ∈ 
+F => ( fc ic id 
+T => ( fc ic id 
+NE => ( fc ic id not { 
+S => id if print scan while 
+ES => id 
+E => ( fc ic id 
+RE => ( fc ic id 
+AE => ( fc ic id not { 
+
+## FOLLOWS
+F => ) * + - / ; < = > and do else end id if or print scan then while } 
+TY => id 
+T' => ) + - ; < = > and do else end id if or print scan then while } 
+NE => and do or then } 
+VL' => ; 
+BE => do then } 
+DL => end id if print scan while 
+VL => ; 
+WS => else end id if print scan while 
+PE => else end id if print scan while 
+ES => else end id if print scan while 
+RE => and do or then } 
+E => ) ; < = > and do else end id if or print scan then while } 
+S => else end id if print scan while 
+IOS => else end id if print scan while 
+P => $ 
+RE' => and do or then } 
+SL => else end 
+T => ) + - ; < = > and do else end id if or print scan then while } 
+E' => ) ; < = > and do else end id if or print scan then while } 
+IS => else end id if print scan while 
+IS' => else end id if print scan while 
+AE => do or then } 
+D => end float id if int print scan while 
+BE' => do then } 
+AE' => do or then } 
+

@@ -1,0 +1,8 @@
+id ) ( * +
+E' T' F T E
+E
+E' -> + T E' | ∈
+T' -> * F T' | ∈
+F -> ( E ) | id
+T -> F T'
+E -> T E'

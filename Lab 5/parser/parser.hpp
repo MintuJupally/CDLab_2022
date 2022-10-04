@@ -435,7 +435,13 @@ public:
                 }
             }
 
-            vector<string> rule = table[top][tokens[pos]][top][0];
+            vector<vector<string>> cell = table[top][tokens[pos]][top];
+
+            if (cell.size() == 0)
+                return false;
+
+            vector<string> rule = cell[0];
+
             stk.pop();
 
             for (int i = rule.size() - 1; i >= 0; i--)
