@@ -10,3 +10,4 @@
 | Lab 3 | Lexical Analysis (LEX)                |
 | Lab 4 | Parsing                               |
 | Lab 5 | LL(1) Parser                          |
+| Lab 7 | LEX + YACC                            |
