@@ -159,6 +159,12 @@ void loadGrammar()
 
     ifstream inp("Grammar.txt");
 
+    if (inp.fail())
+    {
+        cout << red << "Could not find Grammar.txt" << reset << endl;
+        return;
+    }
+
     string terminals, non_terminals, start, line;
     getline(inp, terminals);
     getline(inp, non_terminals);
