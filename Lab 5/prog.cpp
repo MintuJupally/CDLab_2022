@@ -1,9 +1,11 @@
+#define DEBUG 0
+
 #include <iostream>
 #include <fstream>
 #include <algorithm>
 
-#include "parser/parser.hpp"
 #include "colors.hpp"
+#include "parser/parser.hpp"
 
 using namespace std;
 
@@ -14,7 +16,10 @@ Parser P;
 
 void printMenu()
 {
-    cout << "1. Load new grammar from Grammar.txt\n2. Test data from input.txt against Grammar\n0. Exit\n----------------------------------------------\n";
+    cout << "1. Load new grammar from Grammar.txt\n";
+    if (P.first.size() > 0)
+        cout << "2. Test data from input.txt against Grammar\n";
+    cout << "0. Exit\n----------------------------------------------\n";
 }
 
 void printFirsts(ofstream &out)
@@ -150,6 +155,7 @@ void writeFirstFollow()
 void loadGrammar()
 {
     G.clear();
+    P.clear();
 
     ifstream inp("Grammar.txt");
 
@@ -238,8 +244,11 @@ int main()
                 loadGrammar();
                 break;
             case 2:
-                parseInput();
-                break;
+                if (P.first.size() > 0)
+                {
+                    parseInput();
+                    break;
+                }
             default:
                 cout << "Invalid choice" << endl;
             }

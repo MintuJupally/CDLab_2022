@@ -9,6 +9,7 @@
 
 using namespace std;
 
+// LL(1) Parser
 class Parser
 {
 private:
@@ -387,6 +388,7 @@ public:
         tabulate();
     }
 
+    // checks tokens against grammar using LL(1) top-down parsing
     bool parse(vector<string> tokens)
     {
         stack<string> stk;
@@ -405,8 +407,10 @@ public:
         int pos = 0;
         while (pos < tokens.size() && !stk.empty())
         {
-            // cout << right << setw(5) << pos;
-            // cout << " - " << setw(mlen + 5) << left << tokens[pos];
+#if DEBUG
+            cout << right << setw(5) << pos;
+            cout << " - " << setw(mlen + 5) << left << tokens[pos];
+#endif
 
             string top = stk.top();
 
@@ -418,13 +422,21 @@ public:
                 s = " " + s;
                 temp.pop();
             }
-            // cout << s << "\t";
+
+#if DEBUG
+            cout << s << "\t";
+#endif
 
             if (G.terminals.find(top) != G.terminals.end() || top == "$")
             {
                 if (top == tokens[pos])
                 {
-                    // cout << "match" << endl;
+#if DEBUG
+                    cout << endl
+                         << setw(mlen + 13) << " "
+                         << yellow << "match" << reset << endl;
+#endif
+
                     stk.pop();
                     ++pos;
                     continue;
@@ -450,9 +462,20 @@ public:
                     stk.push(rule[i]);
             }
 
-            // cout << endl;
+#if DEBUG
+            cout << endl;
+#endif
         }
 
         return pos >= tokens.size() && stk.empty();
+    }
+
+    // clears Parser object
+    void clear()
+    {
+        G.clear();
+        first.clear();
+        follow.clear();
+        table.clear();
     }
 };

@@ -328,6 +328,7 @@ private:
     }
 
 public:
+    // eliminates Left Recursion from the grammar
     static Grammar eliminateLR(Grammar g)
     {
         Grammar gsimp = simplifyRules(g);
@@ -336,6 +337,7 @@ public:
         return gnoLR;
     }
 
+    // Left Factorizes the grammar
     static Grammar LFactorize(Grammar g)
     {
         return leftFactorize(g);
