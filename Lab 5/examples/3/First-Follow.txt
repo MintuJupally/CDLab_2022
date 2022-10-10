@@ -1,0 +1,6 @@
+## FIRSTS
+S => a b ∈ 
+
+## FOLLOWS
+S => $ a b 
+

@@ -190,15 +190,24 @@ void loadGrammar()
 
     G_LL = g_noLR_LF;
 
-    writeGrammar(G_LL);
-    cout << yellow << "✓ Written LL(1) grammar into 'output/GrammarLL.txt'" << reset << endl;
+    bool isLL1 = P.initialize(g_noLR_LF);
 
-    P.initialize(g_noLR_LF);
+    writeGrammar(G_LL);
+    if (!isLL1)
+    {
+        cout << red << "! Given grammar is not LL(1)" << reset << endl;
+        cout << yellow << "✓ Written left factorized and left-recursion-free grammar into 'output/GrammarLL.txt'" << reset << endl;
+    }
+    else
+        cout << yellow << "✓ Written LL(1) grammar into 'output/GrammarLL.txt'" << reset << endl;
 
     writeFirstFollow();
     cout << yellow << "✓ Written First and Follow of the grammar into 'output/First-Follow.txt'" << reset << endl;
 
     cout << yellow << "Parse Table can be checked in 'output/Parse-Table.txt'" << reset << endl;
+
+    if (!isLL1)
+        P.clear();
 }
 
 void parseInput()

@@ -180,7 +180,7 @@ private:
     void printTable()
     {
         int n = G.non_terminals.size() + 1; // num of rows
-        int m = G.terminals.size() + 1;     // num of columns
+        int m = G.terminals.size() + 2;     // num of columns
 
         vector<vector<vector<string>>> tab(n, vector<vector<string>>(m));
 
@@ -274,7 +274,7 @@ private:
 
         for (int i = 0; i < n; i++)
         {
-            for (int j = 0; j < roh[j]; j++)
+            for (int j = 0; j < roh[i]; j++)
             {
                 for (int k = 0; k < m; k++)
                 {
@@ -292,23 +292,25 @@ private:
                         out << "|" << setw(cow[k]) << " ";
                     }
                 }
-
                 out << "|" << endl;
-                for (int col = 0; col < m; col++)
-                {
-                    out << "+";
-                    for (int x = 0; x < cow[col]; x++)
-                        out << "-";
-                }
-                out << "+" << endl;
             }
+
+            for (int col = 0; col < m; col++)
+            {
+                out << "+";
+                for (int x = 0; x < cow[col]; x++)
+                    out << "-";
+            }
+            out << "+" << endl;
         }
 
         out.close();
     }
 
-    void tabulate()
+    bool tabulate()
     {
+        bool isLL1 = true;
+
         for (auto nti : G.non_terminals)
         {
             string nt = nti.first;
@@ -365,11 +367,16 @@ private:
                 for (auto t : req)
                 {
                     table[nt][t][nt].push_back(rule);
+
+                    if (isLL1 && table[nt][t][nt].size() > 1)
+                        isLL1 = false;
                 }
             }
         }
 
         printTable();
+
+        return isLL1;
     }
 
 public:
@@ -379,13 +386,13 @@ public:
     Grammar G;
 
     // initialize parser with given grammar
-    void initialize(Grammar g)
+    bool initialize(Grammar g)
     {
         G = g;
 
         evaluateFirsts();
         evaluateFollows();
-        tabulate();
+        return tabulate();
     }
 
     // checks tokens against grammar using LL(1) top-down parsing
