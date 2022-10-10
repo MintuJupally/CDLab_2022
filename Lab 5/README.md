@@ -19,7 +19,7 @@ g++ prog.cpp && ./a.out
 
 ## Sample execution output
 
-![sample_execution](https://user-images.githubusercontent.com/59505795/193503439-372f5c31-1566-4460-aa43-58cb6c3d92ce.png)
+![sample_execution](https://user-images.githubusercontent.com/59505795/194948983-46377a12-b7e8-4f14-b694-814a9d3d82af.png)
 
 Grammar.txt
 ![Grammar.txt](https://user-images.githubusercontent.com/59505795/193503533-143276d2-f296-4f55-bee5-70944d94657d.png)
