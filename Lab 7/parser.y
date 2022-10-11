@@ -109,6 +109,8 @@ exp :               exp PLUS exp
                     | exp MULT exp
                     | exp DIV exp
                     | exp MOD exp
+                    | MINUS exp
+                    | PLUS exp
                     | exp DOT exp
                     | LEFT_PAREN exp RIGHT_PAREN
                     | id
