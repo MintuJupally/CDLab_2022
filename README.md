@@ -11,3 +11,4 @@
 | Lab 4 | Parsing                               |
 | Lab 5 | LL(1) Parser                          |
 | Lab 7 | LEX + YACC                            |
+| Lab 8 | Calculator                            |
