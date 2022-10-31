@@ -71,8 +71,6 @@ C:          LEFT_PAREN A RIGHT_PAREN    {
                                         }
 %%
 
-extern int yylex(), yyparse();
-
 int yyerror(char *s)
 {
 	fprintf(stderr, "%s in line no : %d => '%s'\n", s, yylineno, yytext);
