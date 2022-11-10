@@ -1,8 +1,7 @@
 global
-	if a>=b:
-		a :=b
-	end;
-
-	b := b + 3;
-	c := d + e + f
+	if a < 2:
+		if b<6:
+			a:=7
+		end
+	end
 end

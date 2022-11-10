@@ -49,6 +49,8 @@ Block* colon()
 
     return block;
 }
+
+Block** dp=NULL;
 %}
 
 
@@ -72,7 +74,7 @@ Block* colon()
     char* code_str;
 }
 
-%type <block> prog stmtListO stmtList decl typeList epsilon stmt
+%type <block> prog stmtListO stmtList epsilon stmt
 %type <block> assignmentStmt readStmt printStmt whileStmt ifStmt exitLoop skip
 %type <block> exp id indxListO indxList dotId elsePart bExp
 
@@ -136,7 +138,8 @@ stmtList            :   stmtList SEMICOLON stmt                 {
                     |   stmt                                    {
                                                                     cout<<"stmtList stmt"<<endl;             
                                                                     if($1->nextBlock == NULL)
-                                                                    {
+                                                                    {   
+                                                                        cout<<"------------ next block is null"<<endl;
                                                                         $1->nextBlock = new Block();
                                                                     }
                                                                     $1->nextBlock->code->append(new_label());
@@ -151,13 +154,16 @@ stmtList            :   stmtList SEMICOLON stmt                 {
                                                                     b->concat(newline());
 
                                                                     $$ = b;
-                                                                    cout<<"~ stmtList stmt"<<endl;             
+                                                                    b->printCode();
+                                                                    cout<<" ***** ";
+                                                                    $1->nextBlock->printCode();
+                                                                    cout<<"~ stmtList stmt\n"<<endl;             
                                                                 }
 stmt                :   assignmentStmt
                     |   readStmt
                     |   printStmt
                     |   ifStmt
-                    |   whileStmt                       { $$ = new Block(); }
+                    |   whileStmt
                     |   exitLoop                        { $$ = new Block(); }
                     |   skip                        { $$ = new Block(); }
 assignmentStmt      :   dotId ASSIGN exp            {
@@ -233,10 +239,10 @@ ifStmt              :   IF bExp COLON stmtList elsePart END     {
                                                                     $$ = new Block();
                                                                     $$->nextBlock = new Block();
 
-
                                                                     if($5==NULL)
                                                                     {
                                                                         $2->falseBlock = $$->nextBlock;
+
                                                                         $4->nextBlock = $$->nextBlock;
 
                                                                         $$->concat($2);
@@ -259,7 +265,58 @@ ifStmt              :   IF bExp COLON stmtList elsePart END     {
                                                                 }
 elsePart            :   ELSE stmtList                           {   $$ = $2;    }
                     |   epsilon                                 {   $$ = NULL;  }
-whileStmt           :   WHILE bExp COLON stmtList END
+whileStmt           :   WHILE bExp COLON stmtList END           {
+                                                                    cout<<"whileStmt"<<endl;
+                                                                    string begin = new_label();
+                                                                    $2->trueBlock->code->append(new_label());
+
+                                                                    cout<<1<<endl;
+
+                                                                    Block* b = new Block();
+                                                                    $$ = b;
+                                                                    b->nextBlock = new Block();
+
+                                                                    //
+                                                                    $2->falseBlock = b->nextBlock;
+                                                                    if($4->nextBlock==NULL)
+                                                                        $4->nextBlock = new Block();
+                                                                    $4->nextBlock->code->append(begin);
+
+                                                                    cout<<2<<endl;
+                                                                    Block* _begin = new Block();
+                                                                    _begin->labelBlock = &($4->nextBlock);
+
+                                                                    b->concat(_begin);
+                                                                    b->concat(colon());
+                                                                    b->concat(newline());
+
+                                                                    b->concat($2);
+
+                                                                    Block* b_true = new Block();
+                                                                    b_true->labelBlock = &($2->trueBlock);
+
+                                                                    b->concat(b_true);
+                                                                    b->concat(colon());
+                                                                    b->concat(newline());
+                                                                    b->concat($4);
+
+                                                                    string c = "goto ";
+                                                                    Code* curr = new Code();
+                                                                    curr->append(c);
+                                                                    Block* nb = new Block();
+                                                                    nb->code = curr;
+
+                                                                    b->concat(nb);
+
+                                                                    Block* _begin2 = new Block();
+                                                                    _begin2->labelBlock = &($4->nextBlock);
+
+                                                                    b->concat(_begin2);
+                                                                    b->concat(newline());
+
+                                                                    b->printCode();
+                                                                    cout<<"~ whileStmt\n"<<endl;
+                                                                }
 exitLoop            :   EXITLOOP
 skip                :   SKIP
 id                  :   ID indxListO                {
@@ -295,11 +352,35 @@ indxList            :   indxList LEFT_SQ_BKT exp RIGHT_SQ_BKT       {
                                                                         $$ = new Block();
                                                                         $$->code = curr;
                                                                     }   
-bExp                :   bExp OR bExp
+bExp                :   bExp OR bExp                        {
+                                                                cout<<"bExp OR bExp"<<endl;
+                                                                Block* b = new Block();
+                                                                $$ = b;
+                                                                b->trueBlock = new Block();
+                                                                b->falseBlock = new Block();
+
+                                                                $1->trueBlock = b->trueBlock;
+                                                                $1->falseBlock->code->append(new_label());
+                                                                $3->trueBlock = b->trueBlock;
+                                                                
+                                                                $3->falseBlock = b->falseBlock;
+                                                                b->concat($1);
+                                                                
+                                                                Block* _1_false = new Block();
+                                                                _1_false->labelBlock = &($1->falseBlock);
+                                                                b->concat(_1_false);
+                                                                b->concat(colon());
+                                                                b->concat(newline());
+
+                                                                b->concat($3);
+                                                                b->printCode();
+                                                                cout<<"~ bExp OR bExp\n"<<endl;
+                                                            }
                     |   bExp AND bExp
                     |   NOT bExp
                     |   LEFT_PAREN bExp RIGHT_PAREN
                     |   exp relOP exp                       {
+                                                                cout<<"exp relOP exp"<<endl;
                                                                 Block *b = new Block();
 
                                                                 b->concat($1);
@@ -337,12 +418,15 @@ bExp                :   bExp OR bExp
 
                                                                 Block *b_false = new Block();
                                                                 b_false->labelBlock = &(b->falseBlock);
+                                                                dp = b_false->labelBlock;
                                                                 b2->concat(b_false);
 
                                                                 b->concat(b2);
                                                                 b->concat(newline());
 
                                                                 $$ = b;
+                                                                b->printCode();
+                                                                cout<<"~ exp relOP exp\n"<<endl;
                                                             }
 relOP               :   EQ
                     |   LE
