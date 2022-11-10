@@ -1,0 +1,8 @@
+global
+	if a>=b:
+		a :=b
+	end;
+
+	b := b + 3;
+	c := d + e + f
+end
