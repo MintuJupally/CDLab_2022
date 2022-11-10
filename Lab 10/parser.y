@@ -49,8 +49,6 @@ Block* colon()
 
     return block;
 }
-
-Block** dp=NULL;
 %}
 
 
@@ -110,8 +108,6 @@ typeDef             :   ID ASSIGN PRODUCT typeList END
 stmtListO           :   stmtList
                     |   epsilon
 stmtList            :   stmtList SEMICOLON stmt                 {
-                                                                    cout<<"stmtList"<<endl;  
-
                                                                     Block *b = new Block();
                                                                     b->nextBlock = new Block();
                                                                     $$ = b;
@@ -132,14 +128,10 @@ stmtList            :   stmtList SEMICOLON stmt                 {
                                                                     b->concat(colon());
                                                                     b->concat(newline());
                                                                     b->concat($3);
-                                                                    
-                                                                    cout<<"~ stmtList"<<endl;             
                                                                 }
                     |   stmt                                    {
-                                                                    cout<<"stmtList stmt"<<endl;             
                                                                     if($1->nextBlock == NULL)
                                                                     {   
-                                                                        cout<<"------------ next block is null"<<endl;
                                                                         $1->nextBlock = new Block();
                                                                     }
                                                                     $1->nextBlock->code->append(new_label());
@@ -154,10 +146,6 @@ stmtList            :   stmtList SEMICOLON stmt                 {
                                                                     b->concat(newline());
 
                                                                     $$ = b;
-                                                                    b->printCode();
-                                                                    cout<<" ***** ";
-                                                                    $1->nextBlock->printCode();
-                                                                    cout<<"~ stmtList stmt\n"<<endl;             
                                                                 }
 stmt                :   assignmentStmt
                     |   readStmt
@@ -167,7 +155,6 @@ stmt                :   assignmentStmt
                     |   exitLoop                        { $$ = new Block(); }
                     |   skip                        { $$ = new Block(); }
 assignmentStmt      :   dotId ASSIGN exp            {
-                                                        cout<<"assignmentStmt"<<endl;
                                                         string c = $1->var;
                                                         c+=" = ";
                                                         c+=$3->var;
@@ -180,8 +167,6 @@ assignmentStmt      :   dotId ASSIGN exp            {
                                                         b->concat(newline());
                                                         $3->concat(b);
                                                         $$ = $3;
-                                                        
-                                                        cout<<"~assignmentStmt"<<endl;
                                                     }           
 dotId               :   id                          
                     |   id DOT dotId                {
@@ -233,7 +218,6 @@ printStmt           :   PRINT STRING                {
                                                         $$->code = curr;
                                                     }
 ifStmt              :   IF bExp COLON stmtList elsePart END     {
-                                                                    cout<<"ifStmt"<<endl;
                                                                     $2->trueBlock->code->append(new_label());
 
                                                                     $$ = new Block();
@@ -258,31 +242,23 @@ ifStmt              :   IF bExp COLON stmtList elsePart END     {
                                                                     }
                                                                     else
                                                                     {
-
                                                                     }
-
-                                                                    cout<<"~ ifStmt"<<endl;
                                                                 }
 elsePart            :   ELSE stmtList                           {   $$ = $2;    }
                     |   epsilon                                 {   $$ = NULL;  }
 whileStmt           :   WHILE bExp COLON stmtList END           {
-                                                                    cout<<"whileStmt"<<endl;
                                                                     string begin = new_label();
                                                                     $2->trueBlock->code->append(new_label());
-
-                                                                    cout<<1<<endl;
 
                                                                     Block* b = new Block();
                                                                     $$ = b;
                                                                     b->nextBlock = new Block();
 
-                                                                    //
                                                                     $2->falseBlock = b->nextBlock;
                                                                     if($4->nextBlock==NULL)
                                                                         $4->nextBlock = new Block();
                                                                     $4->nextBlock->code->append(begin);
 
-                                                                    cout<<2<<endl;
                                                                     Block* _begin = new Block();
                                                                     _begin->labelBlock = &($4->nextBlock);
 
@@ -313,9 +289,6 @@ whileStmt           :   WHILE bExp COLON stmtList END           {
 
                                                                     b->concat(_begin2);
                                                                     b->concat(newline());
-
-                                                                    b->printCode();
-                                                                    cout<<"~ whileStmt\n"<<endl;
                                                                 }
 exitLoop            :   EXITLOOP
 skip                :   SKIP
@@ -353,7 +326,6 @@ indxList            :   indxList LEFT_SQ_BKT exp RIGHT_SQ_BKT       {
                                                                         $$->code = curr;
                                                                     }   
 bExp                :   bExp OR bExp                        {
-                                                                cout<<"bExp OR bExp"<<endl;
                                                                 Block* b = new Block();
                                                                 $$ = b;
                                                                 b->trueBlock = new Block();
@@ -373,14 +345,39 @@ bExp                :   bExp OR bExp                        {
                                                                 b->concat(newline());
 
                                                                 b->concat($3);
-                                                                b->printCode();
-                                                                cout<<"~ bExp OR bExp\n"<<endl;
                                                             }
-                    |   bExp AND bExp
-                    |   NOT bExp
-                    |   LEFT_PAREN bExp RIGHT_PAREN
+                    |   bExp AND bExp                       {
+                                                                Block* b = new Block();
+                                                                $$ = b;
+                                                                b->trueBlock = new Block();
+                                                                b->falseBlock = new Block();
+
+                                                                $1->trueBlock->code->append(new_label());
+                                                                $1->trueBlock = b->falseBlock;
+                                                                $3->trueBlock = b->trueBlock;
+                                                                
+                                                                $3->falseBlock = b->falseBlock;
+                                                                b->concat($1);
+                                                                
+                                                                Block* _1_true = new Block();
+                                                                _1_true->labelBlock = &($1->trueBlock);
+                                                                b->concat(_1_true);
+                                                                b->concat(colon());
+                                                                b->concat(newline());
+
+                                                                b->concat($3);
+                                                                b->printCode();
+                                                            }
+                    |   NOT bExp                            {
+                                                                $$ = new Block();
+                                                                $$->trueBlock = new Block();
+                                                                $$->falseBlock = new Block();
+
+                                                                $2->trueBlock = $$->falseBlock;
+                                                                $2->falseBlock = $$->trueBlock;
+                                                            }
+                    |   LEFT_PAREN bExp RIGHT_PAREN         {   $$ = $2;    }
                     |   exp relOP exp                       {
-                                                                cout<<"exp relOP exp"<<endl;
                                                                 Block *b = new Block();
 
                                                                 b->concat($1);
@@ -418,15 +415,13 @@ bExp                :   bExp OR bExp                        {
 
                                                                 Block *b_false = new Block();
                                                                 b_false->labelBlock = &(b->falseBlock);
-                                                                dp = b_false->labelBlock;
+                                                                
                                                                 b2->concat(b_false);
 
                                                                 b->concat(b2);
                                                                 b->concat(newline());
 
                                                                 $$ = b;
-                                                                b->printCode();
-                                                                cout<<"~ exp relOP exp\n"<<endl;
                                                             }
 relOP               :   EQ
                     |   LE
@@ -456,16 +451,99 @@ exp                 :   exp PLUS exp                        {
                                                                 $$ = $1;
                                                                 $$->var = var;
                                                             }
-                    |   exp MINUS exp
-                    |   exp MULT exp
-                    |   exp DIV exp
-                    |   exp MOD exp
+                    |   exp MINUS exp                       {
+                                                                $1->concat($3);
+
+                                                                string var = new_variable();
+                                                                string c = var;
+                                                                c+=" = ";
+                                                                c+=$1->var;
+                                                                c+=" - ";
+                                                                c+=$3->var;
+                                                                
+                                                                Code* curr = new Code();
+                                                                curr->append(c);
+
+                                                                Block* b = new Block();
+                                                                b->code = curr;
+                                                                
+                                                                b->concat(newline());
+                                                                $1->concat(b);
+                                                                
+                                                                $$ = $1;
+                                                                $$->var = var;
+                                                            }
+                    |   exp MULT exp                        {
+                                                                $1->concat($3);
+
+                                                                string var = new_variable();
+                                                                string c = var;
+                                                                c+=" = ";
+                                                                c+=$1->var;
+                                                                c+=" * ";
+                                                                c+=$3->var;
+                                                                
+                                                                Code* curr = new Code();
+                                                                curr->append(c);
+
+                                                                Block* b = new Block();
+                                                                b->code = curr;
+                                                                
+                                                                b->concat(newline());
+                                                                $1->concat(b);
+                                                                
+                                                                $$ = $1;
+                                                                $$->var = var;
+                                                            }
+                    |   exp DIV exp                         {
+                                                                $1->concat($3);
+
+                                                                string var = new_variable();
+                                                                string c = var;
+                                                                c+=" = ";
+                                                                c+=$1->var;
+                                                                c+=" / ";
+                                                                c+=$3->var;
+                                                                
+                                                                Code* curr = new Code();
+                                                                curr->append(c);
+
+                                                                Block* b = new Block();
+                                                                b->code = curr;
+                                                                
+                                                                b->concat(newline());
+                                                                $1->concat(b);
+                                                                
+                                                                $$ = $1;
+                                                                $$->var = var;
+                                                            }
+                    |   exp MOD exp                         {
+                                                                $1->concat($3);
+
+                                                                string var = new_variable();
+                                                                string c = var;
+                                                                c+=" = ";
+                                                                c+=$1->var;
+                                                                c+=" % ";
+                                                                c+=$3->var;
+                                                                
+                                                                Code* curr = new Code();
+                                                                curr->append(c);
+
+                                                                Block* b = new Block();
+                                                                b->code = curr;
+                                                                
+                                                                b->concat(newline());
+                                                                $1->concat(b);
+                                                                
+                                                                $$ = $1;
+                                                                $$->var = var;
+                                                            }
                     |   MINUS exp
                     |   PLUS exp
                     |   exp DOT exp
                     |   LEFT_PAREN exp RIGHT_PAREN
                     |   id
-                    |   LEFT_PAREN ID COLON actParamListO RIGHT_PAREN
                     |   INT_CONST                           {   
                                                                 Code* c = new Code();
                                                                 string var = new_variable();
@@ -490,10 +568,6 @@ exp                 :   exp PLUS exp                        {
                                                                 $$->var = var;
                                                                 $$->concat(newline());
                                                             }
-actParamListO       :   actParamList
-                    |   epsilon
-actParamList        :   actParamList COMMA exp
-                    |   exp 
 epsilon             :                                       { $$ = new Block(); }
 %%  
 

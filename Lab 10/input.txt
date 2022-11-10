@@ -1,7 +1,6 @@
 global
-	if a < 2:
-		if b<6:
-			a:=7
-		end
+	while i<10:
+		print %d i;
+		i:=i+1
 	end
 end
