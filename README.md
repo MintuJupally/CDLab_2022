@@ -1,7 +1,8 @@
 # Compiler Design Laboratory
 
 **Institute:** IIT Bhubaneswar\
-**Year**: 2022
+**Year**: 2022\
+**Semester**: 7
 
 | Lab    | Description                           |
 | ------ | ------------------------------------- |
